@@ -1,2 +1,6 @@
 # DP-605
-Desarrolla reports dinámicos con Microsoft Power BI
+## Crea reportes dinámicos con Microsoft Power BI
+____
+### Documentos del curso
+
+(Presentación)
