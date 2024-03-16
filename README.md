@@ -2,7 +2,7 @@
 ## Crea reportes dinámicos con Microsoft Power BI
 ____
 ### Documentos del curso
-[Presentación](https://github.com/JBeumala-Dignitae/DP-605/blob/main/README.md)
+[Presentación](https://github.com/JBeumala-Dignitae/DP-605/blob/main/Presentacion%20Curso.pdf)
 
 [Introducción a Power BI](https://github.com/JBeumala-Dignitae/DP-605/blob/main/Introducci%C3%B3n%20a%20Power%20BI.pdf)
 
