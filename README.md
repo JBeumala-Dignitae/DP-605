@@ -4,7 +4,7 @@ ____
 ### Documentos del curso
 [Presentación](https://github.com/JBeumala-Dignitae/DP-605/blob/main/README.md)
 
-[Introducción a Power BI](https://github.com/JBeumala-Dignitae/DP-605/blob/main/README.md)
+[Introducción a Power BI](https://github.com/JBeumala-Dignitae/DP-605/blob/main/Introducci%C3%B3n%20a%20Power%20BI.pdf)
 
 ### Instrucciones detalladas del caso práctico (Inglés)
 [1-Obtener datos con Power BI](https://microsoftlearning.github.io/PL-300-Microsoft-Power-BI-Data-Analyst/Instructions/Labs/01-prepare-data-with-power-query-in-power-bi-desktop.html)
@@ -16,4 +16,3 @@ ____
 [4-Crear Cálculos con DAX en Power BI Desktop](https://microsoftlearning.github.io/PL-300-Microsoft-Power-BI-Data-Analyst/Instructions/Labs/04-create-dax-calculations-in-power-bi-desktop.html)
 
 [5-Diseñar un Report en Power BI Desktop](https://microsoftlearning.github.io/PL-300-Microsoft-Power-BI-Data-Analyst/Instructions/Labs/06-design-report-in-power-bi-desktop.html)
-
