@@ -9,7 +9,7 @@ ____
 ### Instrucciones detalladas del caso práctico (Inglés)
 [1-Obtener datos con Power BI](https://microsoftlearning.github.io/PL-300-Microsoft-Power-BI-Data-Analyst/Instructions/Labs/01-prepare-data-with-power-query-in-power-bi-desktop.html)
 
-[2-Limpiar y cargar datos en Power BI Desktop](https://microsoftlearning.github.io/PL-300-Microsoft-Power-BI-Data-Analyst/Instructions/Labs/01-prepare-data-with-power-query-in-power-bi-desktop.html)
+[2-Limpiar y cargar datos en Power BI Desktop](https://microsoftlearning.github.io/PL-300-Microsoft-Power-BI-Data-Analyst/Instructions/Labs/02-load-data-with-power-query-in-power-bi-desktop.html)
 
 [3-Diseñar un modelo de datos en Power BI Desktop](https://microsoftlearning.github.io/PL-300-Microsoft-Power-BI-Data-Analyst/Instructions/Labs/03-configure-data-model-in-power-bi-desktop.html)
 
@@ -31,4 +31,4 @@ ____
 ### Si Hay tiempo para más...
 [1-Calculos DAX avanzados en Power BI Desktop](https://microsoftlearning.github.io/PL-300-Microsoft-Power-BI-Data-Analyst/Instructions/Labs/05-create-dax-calculations-in-power-bi-desktop-advanced.html)
 
-[2-Código avanzado](https://github.com/JBeumala-Dignitae/DP-605/blob/main/MasSobreDax.dax)
+[2-Código avanzado](https://github.com/JBeumala-Dignitae/DP-605/blob/main/MasSobreDAX.dax)
