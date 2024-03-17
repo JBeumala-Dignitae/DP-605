@@ -1,0 +1,271 @@
+========================================================
+Conectar desde Power BI:
+========================================================
+servidor: dignitae-pl300.database.windows.net
+Base de datos: AdventureWorksDW2020
+Usuario de Base de Datos:
+    User: cursodp605
+    Password: 87dsafJ8SI4CWsd89g68s7df6BOdWiZwG
+    Nivel: dignitae-pl300.database.windows.net;AdventureWorksDW2020
+========================================================
+Power Query - Lenguaje M
+========================================================
+
+------------------------
+1 - Cálculo columna Cost
+------------------------
+# La función if funciona de forma parecida a Excel:
+# If <condición> <Valor si verdadero> else <valor si falso>
+# En este caso si el campo TotalProcutCost tiene valor lo cogemos,
+# en caso contrario, lo calculamos multiplicando OrderQuantity por StandarCost
+
+if [TotalProductCost] = null then [OrderQuantity] * [StandardCost] else [TotalProductCost]
+
+
+--------------------------------
+2 - Definición tabla Salesperson
+--------------------------------
+/*
+Creamos una tabla como copia, solamente del campo Performance???
+*/
+
+Salesperson = 
+    'Salesperson (Performance)'
+
+========================================================
+DAX - Data Analysis eXpressions
+========================================================
+/*
+Las funciones de DAX están en inglés, no se traducen como las de excel.
+Los parámetros en las funciones, por defecto se separan con coma en lugar de punto y coma.
+Si utilizamos una palabra reservada como nombre de tabla (Por ejemplo Date) la debemos poner entre comillas para referenciarla.
+En DAX podemos crear:
+- Tablas -> Vemos a continuación el ejemplo con la tabla de fechas (Date)
+- Columnas -> Se calculan en el momento de crearlas o al actualiar los datos. 
+              Se calculan usando el contexto de la fila a la que pertenecen.
+              Ocupan espacio en el modelo, en el disco, y en la memoria cuando el modelo se carga.
+              Las columnas pertenecen a la tabla en la que se definen.
+- Medidas  -> Se calculan en el momento en que se necesitan.
+              Se calculan en el contexto en el que se necesitan, 
+              que viene determinado por todos los filtros aplicados de cualquier tipo.
+              Existen diversas formas de modificar ese contexto.
+              Las medidas también se colocan en una tabla, pero pertenecen al contexto global,
+              No puede haber 2 medidas en el modelo con el mismo nombre, 
+              y las referenciamos solamente con el nombre de la medida.
+              Cuando hay muchas medidas, se sueen agrupar en tablas específicas de medidas.
+*/
+
+-------------------------
+3 - Definición tabla Date
+-------------------------
+/*
+La función calendarauto busca todas las fechas de nuestro modelo,
+y crea un calendario con todos los días
+desde el primer día del primer año que encuentra
+hasta el último día del último año que encuentra
+Permite un parámetro que indica el mes en que se considera el final del año fiscal.
+En este caso pasamos 6, y por lo tanto el año fiscal termina el 30/06,
+con lo cual crearemos fechas desde el 01/07 del primer año que aparezca,
+hasta el 30/06 del último año que aparezca
+*/
+
+Date = 
+    CALENDARAUTO ( 6 )
+
+----------------------------------------
+4 - Añadimos columna Año a la tabla Date
+----------------------------------------
+/*
+Calculamos el año fiscal.
+Nuestro año va desde el 01/07 al 30/06 del año siguiente.
+de forma que el año fiscal 2024 va del 01/07/2023 al 30/06/2024
+Por eso en nuestro cálculo sumamos 1 a los meses mayores de 6.
+Como en excel el operador "&" concatena/une cadenas de texto.
+
+*/
+
+Year = 
+    "FY" 
+    & YEAR ( 'Date'[Date] ) + IF ( MONTH ( 'Date'[Date] ) > 6, 1 )
+
+----------------------------------------------
+5 - Añadimos columna Trimestre a la tabla Date
+----------------------------------------------
+/*
+Calculamos el trimestre.
+Dependiendo del comportamiento deseado, podemos hacer unicamente referencia al número de trimestre,
+o bien incuir también el año.
+Lo hacemos de acuerdo con el año fiscal.
+Así que cogemos la columna Year que acabamos de crear y en función del mes calculamos el número de trimetre.
+*/
+
+Quarter =
+    'Date'[Year] 
+    & "-Q"
+    & IF(
+        MONTH ( 'Date'[Date] ) <= 3,
+        3,
+        IF(
+            MONTH ( 'Date'[Date] ) <= 6,
+            4,
+            IF(
+                MONTH ( 'Date'[Date] ) <= 9,
+                1,
+                2
+            )
+        )
+    )
+
+
+----------------------------------------------
+5 - Añadimos columna Mes a la tabla Date
+----------------------------------------------
+/*
+Lo hacemos simlemente formateando la fecha.
+El idioma de los meses, dependerá de la configuración reginal de la máquina en que estemos.
+Los parámetros para el formato son los mismos que en excel.
+MM -> Mes de 2 números
+MMM -> Nombre mes de 3 letras
+MMMM -> Nombre mes completo
+*/
+
+Month =
+    FORMAT ( 'Date'[Date], "yyyy-MMM" )
+
+----------------------------------------------
+6 - Añadimos columna ClaveMes a la tabla Date
+----------------------------------------------
+/*
+Necesitamos una columna equivalente, que nos permita ordenar bien los meses.
+Sin ella los meses se ordenarían dentro del año por orden alfabético.
+Lo podemos hacer de nuevo con Format, usando el valor numérico del mes.
+O usando la función MONTH, que extrae ese valor númerico
+*/
+
+MonthKey =
+    ( YEAR ( 'Date'[Date] ) * 100 ) + MONTH ( 'Date'[Date] )
+
+-----------------------
+7 - Medida Precio Medio
+-----------------------
+/*
+Calcula la media aritméica del campo Unit Price,
+según el contexto en que se encuentra.
+*/
+
+Avg Price =
+    AVERAGE ( Sales[Unit Price] )
+
+
+---------------------------
+8 - Medida Mediana de Precio
+---------------------------
+/*
+Calcula la media aritméica del campo Unit Price,
+según el contexto en que se encuentra.
+La mediana es un valor usado en estadística. Se refiere al valor central.
+Cálculo simple de la mediana:
+    Ordenamos los datos de menor a mayor.
+    Si la serie tiene un número impar de medidas, la mediana es la puntuación central de la misma.
+    Si la serie tiene un número par de puntuaciones, la mediana es la media entre las dos puntuaciones centrales.
+*/
+
+Median Price =
+    MEDIAN ( Sales[Unit Price] )
+
+---------------------------
+9 - Medida de Precio Mínimo
+---------------------------
+/*
+Calcula el valor mínimo del campo Unit Price,
+según el contexto en que se encuentra.
+Lo obtenemos con la función MIN.
+*/
+Min Price =
+    MIN( Sales[Unit Price] )
+
+----------------------------
+10 - Medida de Precio Máximo
+----------------------------
+/*
+Calcula el valor máximo del campo Unit Price,
+según el contexto en que se encuentra.
+Lo obtenemos con la función MAX.
+*/
+
+Max Price =
+    MAX ( Sales[Unit Price] )
+
+-----------------------------
+11 - Medida Número de órdenes
+-----------------------------
+/*
+Calcula el número de órdenes,
+según el contexto en que se encuentra.
+Como en este caso tenemos un registro para cada línea de la orden, 
+necesitamos contar solamente los números de orden distintos.
+Lo hacemos con la función DISTINCTCOUNT.
+*/
+
+Orders =
+    DISTINCTCOUNT( Sales[SalesOrderNumber] )
+
+---------------------------------------
+12 - Medida Número de líneas de órdenes
+---------------------------------------
+/*
+Calculamos el número de filas en la tabla de órdenes,
+según el contexto en que se encuentra.
+La recomendación es usar la función COUTROWS
+*/
+
+Order Lines =
+    COUNTROWS ( Sales )
+
+
+---------------------------------------
+13 - Medida Objetivo
+---------------------------------------
+/*
+Calculamos el objetivo de ventas,
+según el contexto en que se encuentra.
+Lo hacemos con la función SUM, pero si no tuviéramos objetivo definido en el contexto,
+aparecerá un valor 0.
+Para evitarlo usamos la función HASONEVALUE.
+Si existe algún valor para el vendedor en el contexto devolvemos la suma,
+en caso contrario devolvemos NULL. 
+(No es necesario especificarlo, es lo que devuelve el IF en caso de no cumplir la condición y no haber especificaado un valor)
+
+*/
+
+Target =
+    IF (
+        HASONEVALUE ( 'Salesperson (Performance)'[Salesperson] ),
+        SUM ( Targets[TargetAmount] )
+    )
+
+
+---------------------------------------
+14 - Medida Variación respecto objetivo
+---------------------------------------
+/*
+Lo calculamos restando a las ventas el objetivo.
+*/
+
+Variance =
+    IF (
+        HASONEVALUE ( 'Salesperson (Performance)'[Salesperson] ),
+        SUM ( Sales[Sales] ) - [Target]
+    )
+
+
+---------------------------------
+15 - Medida Margen sobre objetivo
+---------------------------------
+/*
+Lo calculamos dividiendo la variación por el objetivo.
+En DAX, para evitar errores de división por 0, usamos la función DIVIDE,
+Que tiene un tercer argumento con el valor a devolver en caso de error, por defecto NULL.
+*/
+Variance Margin =
+    DIVIDE ( [Variance], [Target] )

@@ -1,7 +1,0 @@
-========================================================
-Power Query - Lenguaje M
-========================================================
-
-Cálculo columna Cost
---------------------------------------------------------
-if [TotalProductCost] = null then [OrderQuantity] * [StandardCost] else [TotalProductCost]

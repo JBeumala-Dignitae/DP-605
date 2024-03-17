@@ -1,0 +1,137 @@
+========================================================
+Power Query - Lenguaje M
+========================================================
+
+--------------------
+Cálculo columna Cost
+--------------------
+# La función if funciona de forma parecida a Excel:
+# If <condición> <Valor si verdadero> else <valor si falso>
+# En este caso si el campo TotalProcutCost tiene valor lo cogemos,
+# en caso contrario, lo calculamos multiplicando OrderQuantity por StandarCost
+
+if [TotalProductCost] = null then [OrderQuantity] * [StandardCost] else [TotalProductCost]
+
+
+----------------------------
+Definición tabla Salesperson
+----------------------------
+Creamos una tabla como copia, solamente del campo Performance???
+Salesperson = 'Salesperson (Performance)'
+
+========================================================
+DAX - Data Analysis eXpressions
+========================================================
+/*
+Las funciones de DAX están en inglés, no se traducen como las de excel.
+Los parámetros en las funciones, por defecto se separan con coma en lugar de punto y coma.
+*/
+---------------------
+Definición tabla Date
+---------------------
+/*
+La función calendarauto busca todas las fechas de nuestro modelo,
+y crea un calendario con todos los días
+desde el primer día del primer año que encuentra
+hasta el último día del último año que encuentra
+Permite un parámetro que indica el mes en que se considera el final del año fiscal.
+En este caso pasamos 6, y por lo tanto el año fiscal termina el 30/06,
+con lo cual crearemos fechas desde el 01/07 del primer año que aparezca,
+hasta el 30/06 del último año que aparezca
+*/
+
+Date = CALENDARAUTO(6)
+
+-----------------------------
+Añadimos columna Year de la tabla Date
+-----------------------------
+/*
+Calculamos el año fiscal.
+Nuestro año va desde el 01/07 al 30/06 del año siguiente.
+de forma que el año fiscal 2024 va del 01/07/2023 al 30/06/2024
+Por eso en nuestro cálculo sumamos 1 a los meses mayores de 6.
+Como en excel el operador "&" concatena/une cadenas de texto.
+
+*/
+
+Year = "FY" & YEAR('Date'[Date]) + IF(MONTH('Date'[Date]) > 6, 1)
+
+
+>> Date table: Quarter column definition
+==================================================
+Quarter =
+'Date'[Year] & " Q"
+    & IF(
+        MONTH('Date'[Date]) <= 3,
+        3,
+        IF(
+            MONTH('Date'[Date]) <= 6,
+            4,
+            IF(
+                MONTH('Date'[Date]) <= 9,
+                1,
+                2
+            )
+        )
+    )
+
+
+
+>> Date table: Month column definition
+==================================================
+Month =
+FORMAT('Date'[Date], "yyyy MMM")
+
+
+>> Date table: MonthKey column definition
+==================================================
+MonthKey =
+(YEAR('Date'[Date]) * 100) + MONTH('Date'[Date])
+
+
+>> Sales table: Avg Price measure definition
+==================================================
+Avg Price =
+AVERAGE(Sales[Unit Price])
+
+
+>> Sales table: Additional measure definitions (use one definition at a time)
+==================================================
+Median Price =
+MEDIAN(Sales[Unit Price])
+
+Min Price =
+MIN(Sales[Unit Price])
+
+Max Price =
+MAX(Sales[Unit Price])
+
+Orders =
+DISTINCTCOUNT(Sales[SalesOrderNumber])
+
+Order Lines =
+COUNTROWS(Sales)
+
+
+>> Targets table: Target measure definition
+==================================================
+Target =
+IF(
+	HASONEVALUE('Salesperson (Performance)'[Salesperson]),
+	SUM(Targets[TargetAmount])
+)
+
+
+>> Targets table: Variance measure definition
+==================================================
+Variance =
+IF(
+	HASONEVALUE('Salesperson (Performance)'[Salesperson]),
+	SUM(Sales[Sales]) - [Target]
+)
+
+
+>> Targets table: Variance Margin measure definition
+==================================================
+Variance Margin =
+DIVIDE([Variance], [Target])
