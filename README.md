@@ -18,13 +18,17 @@ ____
 [5-Diseñar un Report en Power BI Desktop](https://microsoftlearning.github.io/PL-300-Microsoft-Power-BI-Data-Analyst/Instructions/Labs/06-design-report-in-power-bi-desktop.html)
 
 ### Datos adicionales
-[1-Ventas en formato csv ](https://github.com/JBeumala-Dignitae/DP-605/blob/main/ResellerSales_202006.csv)
 
 [1-Objetivos de venta en formato csv](https://github.com/JBeumala-Dignitae/DP-605/blob/main/ResellerSalesTargets.csv)
 
-[3-Colores formato](https://github.com/JBeumala-Dignitae/DP-605/blob/main/ColorFormats.csv)
+[2-Colores formato](https://github.com/JBeumala-Dignitae/DP-605/blob/main/ColorFormats.csv)
 
-[4-Logo de la empresa](https://github.com/JBeumala-Dignitae/DP-605/blob/main/AdventureWorksLogo.jpg)
+[3-Logo de la empresa](https://github.com/JBeumala-Dignitae/DP-605/blob/main/AdventureWorksLogo.jpg)
 
 ### Código utilizado
-[1-Código usado](https://github.com/JBeumala-Dignitae/DP-605/blob/main/C%C3%B3digo%20usado.txt)
+[1-Código usado](https://github.com/JBeumala-Dignitae/DP-605/blob/main/C%C3%B3digo%20usado.dax)
+
+### Si Hay tiempo para más...
+[1-Calculos DAX avanzados en Power BI Desktop](https://microsoftlearning.github.io/PL-300-Microsoft-Power-BI-Data-Analyst/Instructions/Labs/05-create-dax-calculations-in-power-bi-desktop-advanced.html)
+
+[2-Código avanzado](https://github.com/JBeumala-Dignitae/DP-605/blob/main/MasSobreDax.dax)
